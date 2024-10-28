@@ -121,7 +121,7 @@ function useDrivePicker() {
             .setOAuthToken(token)
             .setDeveloperKey(developerKey)
             .setLocale(locale)
-            .setCallback(callbackFunction);
+            .setCallback(function (data) { return callbackFunction(window.gapi, data); });
         if (setOrigin) {
             picker.setOrigin(setOrigin);
         }

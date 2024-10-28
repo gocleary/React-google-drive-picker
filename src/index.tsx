@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import {
   authResult,
   defaultConfiguration,
+  PickerCallback,
   PickerConfiguration,
 } from './typeDefs'
 import useInjectScript from './useInjectScript'
@@ -138,7 +139,7 @@ export default function useDrivePicker(): [
       .setOAuthToken(token)
       .setDeveloperKey(developerKey)
       .setLocale(locale)
-      .setCallback(callbackFunction)
+      .setCallback((data: PickerCallback) => callbackFunction(window.gapi, data))
 
     if (setOrigin) {
       picker.setOrigin(setOrigin)
