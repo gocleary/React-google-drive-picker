@@ -10,15 +10,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -27,14 +18,13 @@ var react_1 = require("react");
 var typeDefs_1 = require("./typeDefs");
 var useInjectScript_1 = __importDefault(require("./useInjectScript"));
 function useDrivePicker() {
-    var defaultScopes = [''];
+    var defaultScopes = ['https://www.googleapis.com/auth/drive.readonly'];
     var _a = (0, useInjectScript_1.default)('https://apis.google.com/js/api.js'), loaded = _a[0], error = _a[1];
     var _b = (0, useInjectScript_1.default)('https://accounts.google.com/gsi/client'), loadedGsi = _b[0], errorGsi = _b[1];
     var _c = (0, react_1.useState)(false), pickerApiLoaded = _c[0], setpickerApiLoaded = _c[1];
     var _d = (0, react_1.useState)(false), openAfterAuth = _d[0], setOpenAfterAuth = _d[1];
-    var _e = (0, react_1.useState)(false), authWindowVisible = _e[0], setAuthWindowVisible = _e[1];
-    var _f = (0, react_1.useState)(typeDefs_1.defaultConfiguration), config = _f[0], setConfig = _f[1];
-    var _g = (0, react_1.useState)(), authRes = _g[0], setAuthRes = _g[1];
+    var _e = (0, react_1.useState)(typeDefs_1.defaultConfiguration), config = _e[0], setConfig = _e[1];
+    var _f = (0, react_1.useState)(), authRes = _f[0], setAuthRes = _f[1];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     var picker;
     // get the apis from googleapis
@@ -72,8 +62,7 @@ function useDrivePicker() {
         if (!config.token) {
             var client = google.accounts.oauth2.initTokenClient({
                 client_id: config.clientId,
-                scope: (config.customScopes
-                    ? __spreadArray(__spreadArray([], defaultScopes, true), config.customScopes, true) : defaultScopes).join(' '),
+                scope: (config.customScopes ? config.customScopes : defaultScopes).join(' '),
                 callback: function (tokenResponse) {
                     setAuthRes(tokenResponse);
                     createPicker(__assign(__assign({}, config), { token: tokenResponse.access_token }));
@@ -121,7 +110,7 @@ function useDrivePicker() {
             .setOAuthToken(token)
             .setDeveloperKey(developerKey)
             .setLocale(locale)
-            .setCallback(function (data) { return callbackFunction(window.gapi, data); });
+            .setCallback(callbackFunction);
         if (setOrigin) {
             picker.setOrigin(setOrigin);
         }

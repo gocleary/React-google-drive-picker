@@ -50,7 +50,7 @@ export type PickerConfiguration = {
     customViews?: any[];
     locale?: string;
     customScopes?: string[];
-    callbackFunction: (gapi: any, data: PickerCallback) => any;
+    callbackFunction: (data: PickerCallback) => any;
 };
 export declare const defaultConfiguration: PickerConfiguration;
 export {};
