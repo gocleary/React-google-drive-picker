@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react'
 import {
   authResult,
   defaultConfiguration,
-  PickerCallback,
   PickerConfiguration,
 } from './typeDefs'
 import useInjectScript from './useInjectScript'
@@ -15,14 +14,13 @@ export default function useDrivePicker(): [
   (config: PickerConfiguration) => boolean | undefined,
   authResult | undefined
 ] {
-  const defaultScopes = ['']
+  const defaultScopes = ['https://www.googleapis.com/auth/drive.readonly']
   const [loaded, error] = useInjectScript('https://apis.google.com/js/api.js')
   const [loadedGsi, errorGsi] = useInjectScript(
     'https://accounts.google.com/gsi/client'
   )
   const [pickerApiLoaded, setpickerApiLoaded] = useState(false)
   const [openAfterAuth, setOpenAfterAuth] = useState(false)
-  const [authWindowVisible, setAuthWindowVisible] = useState(false)
   const [config, setConfig] =
     useState<PickerConfiguration>(defaultConfiguration)
   const [authRes, setAuthRes] = useState<authResult>()
@@ -70,10 +68,9 @@ export default function useDrivePicker(): [
     if (!config.token) {
       const client = google.accounts.oauth2.initTokenClient({
         client_id: config.clientId,
-        scope: (config.customScopes
-          ? [...defaultScopes, ...config.customScopes]
-          : defaultScopes
-        ).join(' '),
+        scope: (config.customScopes ? config.customScopes : defaultScopes).join(
+          ' '
+        ),
         callback: (tokenResponse: authResult) => {
           setAuthRes(tokenResponse)
           createPicker({ ...config, token: tokenResponse.access_token })
@@ -139,7 +136,7 @@ export default function useDrivePicker(): [
       .setOAuthToken(token)
       .setDeveloperKey(developerKey)
       .setLocale(locale)
-      .setCallback((data: PickerCallback) => callbackFunction(window.gapi, data))
+      .setCallback(callbackFunction)
 
     if (setOrigin) {
       picker.setOrigin(setOrigin)
