@@ -21,7 +21,6 @@ export default function useDrivePicker(): [
   )
   const [pickerApiLoaded, setpickerApiLoaded] = useState(false)
   const [openAfterAuth, setOpenAfterAuth] = useState(false)
-  const [authWindowVisible, setAuthWindowVisible] = useState(false)
   const [config, setConfig] =
     useState<PickerConfiguration>(defaultConfiguration)
   const [authRes, setAuthRes] = useState<authResult>()
@@ -69,10 +68,9 @@ export default function useDrivePicker(): [
     if (!config.token) {
       const client = google.accounts.oauth2.initTokenClient({
         client_id: config.clientId,
-        scope: (config.customScopes
-          ? [...defaultScopes, ...config.customScopes]
-          : defaultScopes
-        ).join(' '),
+        scope: (config.customScopes ? config.customScopes : defaultScopes).join(
+          ' '
+        ),
         callback: (tokenResponse: authResult) => {
           setAuthRes(tokenResponse)
           createPicker({ ...config, token: tokenResponse.access_token })
